@@ -19,7 +19,6 @@ class MinecraftActivity : MainActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            super.onCreate(null)
             finish()
             return
         }
