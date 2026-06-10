@@ -29,7 +29,7 @@ jobs:
 
           if [ -z "${GOOGLE_SERVICES_JSON_BASE64:-}" ]; then
             echo "HAS_GOOGLE_SERVICES=false" >> "$GITHUB_ENV"
-            echo "GOOGLE_SERVICES_JSON_BASE64 is not configured; using a CI-only Firebase placeholder for compile checks."
+            echo "GOOGLE_SERVICES_JSON_BASE64 is not configured; using a CI-only Firebase placeholder for builds."
             mkdir -p app
             cat > app/google-services.json <<'JSON'
           {
@@ -132,29 +132,21 @@ jobs:
         run: echo "curseforge.api_key=${CF_API_KEY}" >> local.properties
 
       - name: Build Debug, Beta and Unsigned Release APKs
-        if: env.HAS_GOOGLE_SERVICES == 'true'
         run: ./gradlew assembleDebug assembleBeta assembleRelease
 
-      - name: Compile Debug Without Firebase Secrets
-        if: env.HAS_GOOGLE_SERVICES == 'false'
-        run: ./gradlew :app:compileDebugKotlin :app:compileDebugJavaWithJavac
-
       - name: Upload Debug APK
-        if: env.HAS_GOOGLE_SERVICES == 'true'
         uses: actions/upload-artifact@v4.6.2
         with:
           name: LeviLauncher-debug-apk
           path: app/build/outputs/apk/debug/*.apk
 
       - name: Upload Unsigned Release APK
-        if: env.HAS_GOOGLE_SERVICES == 'true'
         uses: actions/upload-artifact@v4.6.2
         with:
           name: LeviLauncher-release-unsigned-apk
           path: app/build/outputs/apk/release/*-unsigned.apk
 
       - name: Upload Beta APK
-        if: env.HAS_GOOGLE_SERVICES == 'true'
         uses: actions/upload-artifact@v4.6.2
         with:
           name: LeviLauncher-beta-apk
